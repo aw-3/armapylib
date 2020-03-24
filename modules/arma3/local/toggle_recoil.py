@@ -9,9 +9,6 @@ class Module(BaseModule):
 		"tags": ("arma,local,localplayer"),
 	}
 
-	def __init__(self):
-		pass
-
 	def check(self):
 		return len(engine.get_players())
 

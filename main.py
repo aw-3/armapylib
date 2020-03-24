@@ -4,8 +4,10 @@ import os
 import core.constants as constants
 import core.globals as g
 import core.utils as utils
-from core.winutils import color_text
+from core.winutils import *
 
+# testing
+import core.engines.arma3 as a3
 
 class armapylib(Cmd):
 	engines = utils.index_engines()
@@ -133,6 +135,11 @@ class armapylib(Cmd):
 		except Exception as e:
 			print("Error running module: %s" % str(e))
 
+	def do_test(self, input):
+		a = a3.aob()
+		for x in a:
+			print(hex(x))
+
 	def precmd(self, line):
 		print("\033[0m", end = '')
 		return Cmd.precmd(self, line)
@@ -140,6 +147,7 @@ class armapylib(Cmd):
 	def emptyline(self):
 		pass
 
+elevate()
 
 os.system("cls")
 os.system("color")

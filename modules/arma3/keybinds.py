@@ -28,47 +28,60 @@ class Module(BaseModule):
 		if not event.scan_code in scan_codes:
 			return
 
+		if not keyboard.is_pressed(event.scan_code):
+			return
+
 		scan_codes[event.scan_code]()
 
 	def player_next(self):
 		mod = g.current_module
 		if not mod or not hasattr(mod, "target"):
 			return
+
 		players = engine.get_players()
+		if not players or not len(players):
+			print("no plrs")
+			return
+
+		target = mod.target
+		size = len(players)
+		i = size
 
 		try:
-			size = len(players)
 			i = players.index(mod.target)
-			if i+1 >= size:
-				mod.target = players[0]
-			else:
-				mod.target = players[i+1]
 		except Exception as e:
-			return
+			pass
+		if i+1 >= size:
+			target = players[0]
+		else:
+			target = players[i+1]
+		setattr(mod, "target", target)
+		mod.module_attributes["target"][0] = target
 
 
 	def player_prev(self):
 		mod = g.current_module
 		if not mod or not hasattr(mod, "target"):
 			return
+			
 		players = engine.get_players()
+		if not players or not len(players):
+			return
 
-		i = 0
+		target = mod.target
+		size = len(players)
+		i = size
 
 		try:
 			i = players.index(mod.target)
 		except Exception as e:
-			i = 0
-
-		try:
-			size = len(players)
-			if i <= 0:
-				mod.target = players[-1]
-			else:
-				mod.target = players[i-1]
-		except Exception as e:
-			print(e)
-			return
+			pass
+		if i <= 0:
+			target = players[-1]
+		else:
+			target = players[i-1]
+		setattr(mod, "target", target)
+		mod.module_attributes["target"][0] = target
 
 	def run_module(self):
 		mod = g.current_module

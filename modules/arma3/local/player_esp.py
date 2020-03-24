@@ -11,16 +11,18 @@ class Module(BaseModule):
 	}
 
 	max_distance = OptInteger(3000, "Max render distance")
-
-	def __init__(self):
-		pass
+	enable = OptBool(True, "Enable/Disable ESP")
 
 	def check(self):
 		return len(engine.get_players())
 
 	def run(self):
-		engine.execute(("""apl_plr_md = %d;""" % self.max_distance) + """
-str addMissionEventHandler ["Draw3D", {	
+		if not self.enable:
+			engine.execute("removeMissionEventHandler ['Draw3D', apl_plr_e]");
+			return
+		engine.execute(f"apl_plr_md = {self.max_distance};" + """
+if(!isNil {apl_plr_e}) then {removeMissionEventHandler ['Draw3D', apl_plr_e];};
+apl_plr_e = addMissionEventHandler ["Draw3D", {	
 	{		
 		if ((alive _x)) then {
 			if (  isPlayer _x ) then {
@@ -37,5 +39,5 @@ str addMissionEventHandler ["Draw3D", {
 			}
 		}
 	} foreach (allUnits);
-}] call BIS_fnc_addStackedEventHandler;
+}];
 			""")

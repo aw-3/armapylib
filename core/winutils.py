@@ -1,4 +1,5 @@
 import os, sys
+import ctypes
 
 if sys.platform.lower() == "win32":
     os.system('color')
@@ -14,3 +15,16 @@ class color_text():
     white = lambda x: '\033[37m' + str(x) + '\033[0m'
     underline = lambda x: '\033[4m' + str(x) + '\033[0m'
     reset = lambda x: '\033[0m' + str(x) + '\033[0m'
+
+
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except Exception as e:
+        return false
+
+def elevate():
+    if not is_admin():
+        print("Not running as admin. Trying to elevate..")
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        sys.exit(0)

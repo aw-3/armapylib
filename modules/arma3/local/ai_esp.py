@@ -11,16 +11,18 @@ class Module(BaseModule):
 	}
 
 	max_distance = OptInteger(3000, "Max render distance")
-
-	def __init__(self):
-		pass
+	enable = OptBool(True, "Enable/Disable ESP")
 
 	def check(self):
 		return len(engine.get_players())
 
 	def run(self):
-		engine.execute(("""apl_ai_md = %d;""" % self.max_distance) + """
-str addMissionEventHandler ["Draw3D", {	
+		if not self.enable:
+			engine.execute("removeMissionEventHandler ['Draw3D', apl_ai_e]");
+			return
+		engine.execute(f"apl_ai_md = {self.max_distance};" + """
+if(!isNil {apl_ai_e}) then {removeMissionEventHandler ['Draw3D', apl_ai_e];};
+apl_ai_e = addMissionEventHandler ["Draw3D", {	
 	{		
 		if ((alive _x)) then {
 			if ( !isPlayer _x and (side group _x != side group player) ) then {
@@ -29,7 +31,7 @@ str addMissionEventHandler ["Draw3D", {
 					_color = [1,0.5,0,1];
 					_text = format["%1 : %2m", "AI", str _dist];
 					_pos = [visiblePosition _x select 0, visiblePosition _x select 1, visiblePosition _x select 2];
-					if () then {
+					if ((side group _x == side group player)) then {
 						_color = [0,0,1,1];
 					};
 					drawIcon3D ["", _color, _pos, 0, 0, 0, _text, 1, 0.020, "TahomaB"];
@@ -37,5 +39,4 @@ str addMissionEventHandler ["Draw3D", {
 			}
 		}
 	} foreach (allUnits);
-}] call BIS_fnc_addStackedEventHandler;
-			""")
+}];		""")
