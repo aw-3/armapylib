@@ -7,7 +7,7 @@ import core.engines.arma3 as engine
 class Module(BaseModule):
 	__info__ = {
 		"name": "crash",
-		"description": "Crashes the client for selected player",
+		"description": "crashes the selected player",
 		"authors": ("aw3"),
 		"tags": ("arma,remote,dangerous"),
 	}

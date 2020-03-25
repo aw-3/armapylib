@@ -40,14 +40,14 @@ class armapylib(Cmd):
 
 		self.search_results = []
 
-		print("MODULE" + " "*54 + "DESCRIPTION")
+		print("MODULE" + " "*55 + "DESCRIPTION")
 		print()
 
 		i = 0
 		for mod,modpath in utils.iter_modules():
 			if input in modpath:
 				self.search_results.append([mod,modpath])
-				print(str(i) + " " + modpath + " "*(60-len(modpath)) + mod.__info__["description"])
+				print(str(i) + " " + modpath + " "*(60-len(modpath)-len(str(i))) + mod.__info__["description"])
 				i += 1
 
 	def do_show(self, input):
@@ -147,8 +147,9 @@ class armapylib(Cmd):
 	def emptyline(self):
 		pass
 
-elevate()
 
-os.system("cls")
-os.system("color")
-armapylib().cmdloop()
+if __name__ == "__main__":
+	elevate()
+	os.system("cls")
+	os.system("color")
+	armapylib().cmdloop()
